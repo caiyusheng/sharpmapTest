@@ -13,7 +13,7 @@ using SharpMap.Layers;
 using SharpMap.Data.Providers;
 
 
-namespace WindowsFormsApp1
+namespace SharpMapTEST
 {
     public partial class Form1 : Form
     {

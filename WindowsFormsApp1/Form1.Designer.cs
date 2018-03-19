@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApp1
+﻿namespace SharpMapTEST
 {
     partial class Form1
     {

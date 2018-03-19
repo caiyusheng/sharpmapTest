@@ -10,7 +10,7 @@ using SharpMap;
 
 
 
-namespace WindowsFormsApp1
+namespace SharpMapTEST
 {
     static class Program
     {
