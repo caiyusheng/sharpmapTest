@@ -11,8 +11,7 @@ using System.Data.SqlClient;
 using SharpMap;
 using SharpMap.Layers;
 using SharpMap.Data.Providers;
-
-
+using Microsoft.SqlServer.Types;
 namespace SharpMapTEST
 {
     public partial class Form1 : Form
@@ -42,10 +41,12 @@ namespace SharpMapTEST
             
             VectorLayer layCountries = new VectorLayer("Countries");
             layCountries.DataSource = new ShapeFile("GeoData/World/countries.shp", true);
+          //  layCountries.DataSource.Open();
             layCountries.Style.Fill = new SolidBrush(Color.GreenYellow);
             layCountries.Style.Outline = Pens.Black;
             layCountries.Style.EnableOutline = true;
             layCountries.SRID = 4326;
+         //   layCountries.IsQueryEnabled = true;
 
 
             this.mapBox1.Map.Layers.Add(layCountries);
@@ -61,26 +62,59 @@ namespace SharpMapTEST
 
         private void button2_Click(object sender, EventArgs e)
         {
+            try
+            {
+                
+                VectorLayer layCountries = new VectorLayer("Mssql");
+                //SqlServer2008 MSSQLDP = new SharpMap.Data.Providers.SqlServer2008(connstr, "PT_TOWN", "ID", SqlServerSpatialObjectType.Geography);
+                //MSSQLDP.Table = "gisdb.dbo.PT_TOWN";
+                //MSSQLDP.TableSchema = String.Empty;
+                layCountries.DataSource = new SharpMap.Data.Providers.SqlServer2008(connstr, "gisdb.dbo.PT_TOWN", "geom", "ID", SqlServerSpatialObjectType.Geography, true);
+                //  (connstr, "PT_TOWN", "geom", "ID");
+                // layCountries.DataSource = MSSQLDP;
+                layCountries.DataSource.Open();
+                layCountries.IsQueryEnabled = true;
+
+                layCountries.Style.Fill = new SolidBrush(Color.GreenYellow);
+                layCountries.Style.Outline = Pens.Black;
+                layCountries.Style.EnableOutline = true;
+                //layCountries.SRID = 4326;
+
+
+                this.mapBox1.Map.Layers.Add(layCountries);
+                this.mapBox1.Map.ZoomToExtents();
+                this.mapBox1.Refresh();
+            }catch(Exception ex)
+            {
+
+                MessageBox.Show(ex.ToString());
+            }
+
+
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
             VectorLayer layCountries = new VectorLayer("Mssql");
-            //SqlServer2008 MSSQLDP = new SharpMap.Data.Providers.SqlServer2008(connstr, "PT_TOWN", "ID", SqlServerSpatialObjectType.Geography);
-            //MSSQLDP.Table = "gisdb.dbo.PT_TOWN";
-            //MSSQLDP.TableSchema = String.Empty;
-             layCountries.DataSource = new SharpMap.Data.Providers.SqlServer2008(connstr, "gisdb.dbo.PT_TOWN", "geom","ID",SqlServerSpatialObjectType.Geography); 
+            SqlServer2008 MSSQLDP = new SharpMap.Data.Providers.SqlServer2008(connstr, "PT_TOWN","geom", "ID", SqlServerSpatialObjectType.Geography,false);
+            
+            MSSQLDP.Table = "gisdb.dbo.PT_TOWN";
+            MSSQLDP.TableSchema = String.Empty;
+           // layCountries.DataSource = new SharpMap.Data.Providers.SqlServer2008ExtentsMode
             //  (connstr, "PT_TOWN", "geom", "ID");
-           // layCountries.DataSource = MSSQLDP;
+            layCountries.DataSource = MSSQLDP;
 
 
             layCountries.Style.Fill = new SolidBrush(Color.GreenYellow);
             layCountries.Style.Outline = Pens.Black;
             layCountries.Style.EnableOutline = true;
             //layCountries.SRID = 4326;
-            
+
 
             this.mapBox1.Map.Layers.Add(layCountries);
             this.mapBox1.Map.ZoomToExtents();
             this.mapBox1.Refresh();
-
-
 
         }
     }
